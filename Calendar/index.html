@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello</title>
+</head>
+<style>
+    .total{
+        text-align: center;
+    }
+    button{
+        width: 150px;
+        height: 50px;
+        display: block;
+        float: left;
+    }
+</style>
+<body>
+    <div class="total">
+        <img src="Image/img01.jpg" alt="사진", id="imgT" style="width: 500px; height: 300px; background-color: blue;"> <br>
+        <button style="margin-left: 500px;" onclick="prev()">이전</button>
+        <button style="margin-left: 100px;" onclick="next()">다음</button>
+    </div>
+
+    <script>
+        var imgTitle = document.getElementById("imgT");
+        var imgCount = 1;
+        imgTitle.src = "Image/img02.jpg";
+
+        function next(){
+            if(imgCount == 5) imgCount = 1;
+            else imgCount++;
+            displayImg();
+        }
+
+        
+        function prev(){
+            if(imgCount == 1) imgCount = 5;
+            else imgCount--;
+            displayImg();
+        }
+
+        function displayImg(){
+            imgTitle.src = "Image/img0"+imgCount.toString()+".jpg";
+        }
+    </script>
+</body>
+</html>

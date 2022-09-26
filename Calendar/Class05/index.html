@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ㄷㅏㄹㄹㅕㄱ</title>
+    <style>
+        .total{
+            width: 800px;
+        }
+        .line{
+            width: 800px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="total">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <button onclick="writeC()">넘겨</button>
+    </div>
+
+    <script>
+        var line = document.getElementsByClassName("line");
+        var mon = [0,31,28,31,30,31,30,31,31,30,31,30,31];
+        var monC = 1
+
+
+
+        function writeC(){
+            var day = 1;
+            for(var i = 0; i < 5; i++){
+                var string = '';
+                for(var j = 0; j < 7; j++){
+                    if(mon[monC] <= day){
+                        string += day.toString + '  ';
+                    }
+                    else{
+                        string += '     ';
+                    }
+                }
+                console.log(string);
+                line[i].innerHTML = 'string.toString()';
+            }
+            
+        }
+
+    </script>
+</body>
+</html>

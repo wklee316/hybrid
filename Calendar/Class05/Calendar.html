@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>달력 만들기</title>
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	</head>
+	<body>
+		<div id="calendar"></div>
+		<script>
+			var date = new Date();
+			
+			var calendarYear = date.getFullYear();
+			var calendarMonth = date.getMonth() + 1;
+			var calendarToday = date.getDate();
+			
+			var monthLastDate = new Date(calendarYear, calendarMonth, 0);
+			var calendarMonthLastDate = monthLastDate.getDate();
+			
+			var monthStartDay = new Date(calendarYear, date.getMonth(), 1);
+			var calendarMonthStartDay = monthStartDay.getDay();
+			
+			var calendarWeekCount = Math.ceil((calendarMonthStartDay + calendarMonthLastDate) / 7);
+			
+			var html = "";
+            html += "<table>";
+            html += "<caption style=\"font-size: larger; font-weight: bolder; color: red; text-align: left; padding: 10px 20px;\">" + calendarMonth + "월</caption>";
+            html += "<thead>";
+            html += "<tr>";
+            html += "<th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>";
+            html += "</tr>";
+            html += "</thead>";
+            html += "<tbody>";
+            var calendarPos = 0;
+            var calendarDay = 0;
+            for (var index1 = 0; index1 < calendarWeekCount; index1++) {
+	            html += "<tr>";
+	            for (var index2 = 0; index2 < 7; index2++) {
+		            html += "<td style=\"padding: 10px 10px; text-align: center;\">";
+		            if (calendarMonthStartDay <= calendarPos && calendarDay < calendarMonthLastDate) {
+			            calendarDay++;
+			            html += "<span style=\"display: block; padding: 10px 10px;\">" + calendarDay + "</span>";
+		            }
+		            html += "</td>";
+		            calendarPos++;
+	            }
+	            html += "</tr>";
+            }
+            html += "</tbody>";
+            html += "</table>";
+            $("#calendar").html(html);
+		</script>
+	</body>
+</html>

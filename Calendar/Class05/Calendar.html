@@ -5,50 +5,181 @@
 		<title>달력 만들기</title>
 		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 	</head>
+	<style>
+		#calendar{
+			height: 500px;
+		}
+		button{
+			width: 180px;
+			height: 50px;
+		}
+	</style>
 	<body>
+		<button onclick="prev()">이전</button> <button onclick="next()">다음</button>
 		<div id="calendar"></div>
+
+
 		<script>
 			var date = new Date();
+			var layer = 0;
 			
 			var calendarYear = date.getFullYear();
 			var calendarMonth = date.getMonth() + 1;
 			var calendarToday = date.getDate();
+
+			function printCal(){
 			
-			var monthLastDate = new Date(calendarYear, calendarMonth, 0);
-			var calendarMonthLastDate = monthLastDate.getDate();
+				layer = 0;
+				var monthLastDate = new Date(calendarYear, calendarMonth, 0);
+				var calendarMonthLastDate = monthLastDate.getDate();
 			
-			var monthStartDay = new Date(calendarYear, date.getMonth(), 1);
-			var calendarMonthStartDay = monthStartDay.getDay();
+				var monthStartDay = new Date(calendarYear,calendarMonth-1, 1);
+				var calendarMonthStartDay = monthStartDay.getDay();
 			
-			var calendarWeekCount = Math.ceil((calendarMonthStartDay + calendarMonthLastDate) / 7);
+				var calendarWeekCount = Math.ceil((calendarMonthStartDay + calendarMonthLastDate) / 7);
 			
-			var html = "";
-            html += "<table>";
-            html += "<caption style=\"font-size: larger; font-weight: bolder; color: red; text-align: left; padding: 10px 20px;\">" + calendarMonth + "월</caption>";
-            html += "<thead>";
-            html += "<tr>";
-            html += "<th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>";
-            html += "</tr>";
-            html += "</thead>";
-            html += "<tbody>";
-            var calendarPos = 0;
-            var calendarDay = 0;
-            for (var index1 = 0; index1 < calendarWeekCount; index1++) {
-	            html += "<tr>";
-	            for (var index2 = 0; index2 < 7; index2++) {
-		            html += "<td style=\"padding: 10px 10px; text-align: center;\">";
-		            if (calendarMonthStartDay <= calendarPos && calendarDay < calendarMonthLastDate) {
-			            calendarDay++;
-			            html += "<span style=\"display: block; padding: 10px 10px;\">" + calendarDay + "</span>";
-		            }
-		            html += "</td>";
-		            calendarPos++;
+				var html = "";
+            	html += "<table>";
+            	html += "<caption onclick=\"layerUp()\" style=\"font-size: larger; font-weight: bolder; color: red; text-align: left; padding: 10px 20px;\">" + calendarYear + "년  " +calendarMonth + "월</caption>";
+            	html += "<thead>";
+            	html += "<tr>";
+            	html += "<th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>";
+            	html += "</tr>";
+            	html += "</thead>";
+            	html += "<tbody>";
+            	var calendarPos = 0;
+            	var calendarDay = 0;
+            	for (var index1 = 0; index1 < calendarWeekCount; index1++) {
+	            	html += "<tr>";
+	            	for (var index2 = 0; index2 < 7; index2++) {
+		            	html += "<td style=\"padding: 10px 10px; text-align: center;\">";
+		            	if (calendarMonthStartDay <= calendarPos && calendarDay < calendarMonthLastDate) {
+			            	calendarDay++;
+							if(index2 == 0){
+								html += "<span style=\"display: block; padding: 10px 10px; color: red\">" + calendarDay + "</span>";	
+							}
+							else if(index2 == 6){
+								html += "<span style=\"display: block; padding: 10px 10px; color: blue\">" + calendarDay + "</span>";	
+							}
+							else if(index2 !=0 || index2 !=6){
+			            		html += "<span style=\"display: block; padding: 10px 10px;\">" + calendarDay + "</span>";
+							}
+		            	}
+		            	html += "</td>";
+		            	calendarPos++;
+	            	}
+	            	html += "</tr>";
+            	}
+            	html += "</tbody>";
+            	html += "</table>";
+            	$("#calendar").html(html);
+			}
+
+			printCal();
+			function next(){
+				if(layer == 2){
+					calendarYear += 9;
+					printYear();
+				}
+				else if(layer == 1){
+					calendarYear += 1;
+					printMons();
+				}
+				else if(layer == 0){
+					calendarMonth+=1;
+					if(calendarMonth >= 13){
+						calendarYear += 1;
+						calendarMonth = 1;
+					}
+					printCal();
+				}
+				
+			}
+
+			function prev(){
+				if(layer == 2){
+					calendarYear -= 9;
+					printYear();
+				}
+				else if(layer == 1){
+					calendarYear -= 1;
+					printMons();
+				}
+				else if(layer == 0){
+					calendarMonth-=1;
+					if(calendarMonth <= 0){
+						calendarYear -= 1;
+						calendarMonth = 12;
+					}
+					printCal();
+				}
+			}
+
+			function layerUp(){
+				if(layer == 2) return;
+				
+				layer += 1;
+				switch(layer){
+					case 0: printCal(); break;
+					case 1: printMons(); break;
+					case 2: printYear(); break;
+				}
+			}
+
+			function printMons(){
+				layer = 1;
+				var html = "";
+            	html += "<table>";
+            	html += "<caption onclick=\"layerUp()\" style=\"font-size: larger; font-weight: bolder; color: red; text-align: left; padding: 10px 20px;\">" + calendarYear + "년</caption>";
+				html += "<thead> </thead>";
+				html += "<tbody>";
+				
+				for (var index1 = 0; index1 < 4; index1++) {
+	            	html += "<tr>";
+	            	for (var index2 = 0; index2 < 3; index2++) {
+		            	html += "<td style=\"padding: 10px 10px; text-align: center;\">";
+						html += "<span onclick=\"setMonth(" + (index1 * 3 + index2 +1) + ")\" style=\"display: block; padding: 30px 30px;\">" + (index1 * 3 + index2 +1) + "</span>";
+		            	html += "</td>";
 	            }
 	            html += "</tr>";
-            }
-            html += "</tbody>";
-            html += "</table>";
-            $("#calendar").html(html);
+            	}
+				
+				html += "</tbody>";
+            	html += "</table>";
+            	$("#calendar").html(html);
+			}
+
+			function printYear(){
+				layer = 2;
+				var html = "";
+            	html += "<table>";
+				html += "<thead> </thead>";
+				html += "<tbody>";
+				
+				for (var index1 = 0; index1 < 3; index1++) {
+	            	html += "<tr>";
+	            	for (var index2 = 0; index2 < 3; index2++) {
+		            	html += "<td style=\"padding: 10px 10px; text-align: center;\">";
+						html += "<span onclick=\"setYear(" + (calendarYear + (index1 * 2 + index2)) + ")\" style=\"display: block; padding: 30px 30px;\">" + (calendarYear + (index1 * 2 + index2)) + "년</span>";
+		            	html += "</td>";
+	            }
+	            html += "</tr>";
+            	}
+				
+				html += "</tbody>";
+            	html += "</table>";
+            	$("#calendar").html(html);
+			}
+
+			function setMonth(input){
+				calendarMonth = input;
+				printCal();
+			}
+
+			function setYear(input){
+				calendarYear = input;
+				printMons();
+			}
 		</script>
 	</body>
 </html>

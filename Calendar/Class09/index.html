@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>버튼</title>
+</head>
+<body>
+    <canvas id="canvas" style=" background-color: rgb(215, 245, 245);"></canvas>
+    <script>
+        can = document.getElementById("canvas");
+        ctx = can.getContext("2d");
+
+        ctx.fillStyle = "rgb(200,0,0)";
+        ctx.fillRect (300, 300, 800, 400);
+        var x;
+        var y;
+        var isClick = 0;
+
+        const canvasOffsetX = canvas.offsetLeft;
+        const canvasOffsetY = canvas.offsetTop;
+
+        canvas.width = window.innerWidth - canvasOffsetX;
+        canvas.height = window.innerHeight - canvasOffsetY;
+
+
+        canvas.onmousemove = function(event){
+            x = event.clientX - ctx.canvas.offsetLeft;
+            y = event.clientY - ctx.canvas.offsetTop;
+        }
+
+        class Button{
+            constructor(px,py,w,h){
+                this.posX = px;
+                this.posY = py;
+                this.width = w;
+                this.height = h;
+                this.isClick = 0;
+                ctx.fillStyle = "rgb(200,0,0)";
+            }
+
+            buttonUpdate(){
+                if((x>=this.posX && x<=this.posX+this.width) && (y>=this.posY && y<=this.posY+this.height) && this.isClick == 0){
+                    ctx.fillStyle = "rgb(0,200,0)";
+                }
+                else if((x<this.posX || x>this.posX+this.width) || (y<this.posY || y>this.posY+this.height))
+                {
+                    ctx.fillStyle = "rgb(200,0,0)";
+                    this.isClick = 0;
+                }
+                ctx.clearRect(0,0,800,800);
+                ctx.fillRect (300, 300, 800, 400);
+            }
+
+            buttonClick(){
+                if((x>=this.posX && x<=this.posX+this.width) && (y>=this.posY && y<=this.posY+this.height)){
+                this.isClick = 1;
+                ctx.clearRect(0,0,800,800);
+                ctx.fillStyle = "rgb(0,0,200)";
+                ctx.fillRect (300, 300, 800, 400);
+                }
+            }
+        }
+
+        var btn1 = new Button(300,300,800,400);
+
+        function update(){
+            btn1.buttonUpdate();
+        }
+
+        canvas.onclick = function(event){
+            btn1.buttonClick();
+        }
+
+        setInterval(update, 1);
+
+    </script>
+</body>
+</html>

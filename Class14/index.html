@@ -6,10 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2047</title>
     <style>
+        body{
+            background-image: url('korea.jpg');
+        }
         .total{
+            position: relative;
             margin-top: 100px;
             margin-left: 300px;
-            width: 408px;
+            width: 500px;
+            height: 500px;
         }
         .line{
             display: grid;
@@ -19,12 +24,55 @@
         .box{
             width: 100px;
             height: 100px;
-            background-color: aqua;
+            background-color: rgb(255, 255, 255);
             display: flexbox;
+            border-radius: 10px;
             border: 1px solid black;
             text-align: center;
             vertical-align: center;
             font-size: 18pt;
+            font-weight: bold;
+        }
+        #bigBox{
+            width: 408px;
+            background-color: white;
+        }
+
+        #gameTitle{
+            position: absolute;
+            width: 1000px;
+            font-size: 60px;
+            font-weight: bold;
+            top: 250px;
+            left: 600px;
+            color: rgb(255, 4, 255);
+        }
+
+        img{
+            position: absolute;
+            top: 150px;
+            left: 60px;
+            display: inline-block;
+        }
+
+        #gameover{
+            top: 185px;
+            display: none;
+        }
+
+        #btn1{
+            position: absolute;
+            left: 900px;
+            bottom: 50px;
+            width: 250px;
+            height: 100px;
+            font-size: 50px;
+            font-weight: bold;
+        }
+
+        #score{
+            width: 1000px;
+            font-size: 50px;
             font-weight: bold;
         }
 
@@ -32,23 +80,33 @@
 </head>
 <body>
     <div class="total">
-        <div class="line">
-            <div class = "box" id="box1"></div> <div class = "box" id="box2"></div> <div class = "box" id="box3"></div> <div class = "box" id="box4"></div>
+        <span id="gameTitle">국가 선열을 기리기위한 2048</span>
+        <span id="score">점수 : </span>
+        <img src="gameover.png" id="gameover" style="width: 300px;" alt="">
+        <div id="bigBox">
+            <div class="line">
+                <div class = "box" id="box1"></div> <div class = "box" id="box2"></div> <div class = "box" id="box3"></div> <div class = "box" id="box4"></div>
+            </div>
+            <div class="line">
+                <div class = "box" id="box5"></div> <div class = "box" id="box6"></div> <div class = "box" id="box7"></div> <div class = "box" id="box8"></div>
+            </div>
+            <div class="line">
+                <div class = "box" id="box9"></div> <div class = "box" id="box10"></div> <div class = "box" id="box11"></div> <div class = "box" id="box12"></div>
+            </div>
+            <div class="line">
+                <div class = "box" id="box13"></div> <div class = "box" id="box14"></div> <div class = "box" id="box15"></div> <div class = "box" id="box16"></div>
+            </div>
         </div>
-        <div class="line">
-            <div class = "box" id="box5"></div> <div class = "box" id="box6"></div> <div class = "box" id="box7"></div> <div class = "box" id="box8"></div>
-        </div>
-        <div class="line">
-            <div class = "box" id="box9"></div> <div class = "box" id="box10"></div> <div class = "box" id="box11"></div> <div class = "box" id="box12"></div>
-        </div>
-        <div class="line">
-            <div class = "box" id="box13"></div> <div class = "box" id="box14"></div> <div class = "box" id="box15"></div> <div class = "box" id="box16"></div>
-        </div>
+        
+        <br>
+        <br>
+        <button id="btn1" onclick="init()"> 게임 시작 </button>
     </div>
     <script>
         var board = Array(Array(0,0,0,0),Array(0,0,0,0),Array(0,0,0,0),Array(0,0,0,0));
         var tableID = Array(Array("box1", "box2", "box3", "box4"), Array("box5", "box6", "box7", "box8"), Array("box9", "box10", "box11", "box12"), Array("box13", "box14", "box15", "box16"));
-
+        var gameState = 0;      //0: 준비,  1:running;
+        var score = 0;
         document.onkeydown = keyDownEventHandler;
         function keyDownEventHandler(e) {
             switch (e.keyCode) {
@@ -59,18 +117,45 @@
             }
         }
 
-        init();
+
         function init() {
+            if(gameState == 1) return;
+            document.getElementById("gameover").style.display = "none";
+            document.getElementById("btn1").innerHTML = "다시 시작";
+            gameState = 1;
+            score = 0;
+            document.getElementById("score").innerHTML = "점수 : "+score.toString();
+
             for (var i = 0; i < 4; i++)
                 for (var j = 0; j < 4; j++)
                     board[i][j] = 0;
-            for (var i = 0; i < 2; i++) {
-                var rand = parseInt(Math.random() * 16);
-                var y = parseInt(rand / 4);
-                var x = rand % 4;
-                if (board[y][x] == 0) board[y][x] = getNewNum();
-                else i--;
+            
+            var num = parseInt(Math.random() * 2);
+            if(num == 1){                   //한개만 생성
+                for (var i = 0; i < 1; i++) {
+                    var rand = parseInt(Math.random() * 16);
+                    var y = parseInt(rand / 4);
+                    var x = rand % 4;
+                    var num;
+                    var rand = parseInt(Math.random() * 2);
+                    if (rand == 0) num = 4;
+                    else num = 2;
+
+                    if (board[y][x] == 0) board[y][x] = num;
+                    else i--;
+                }
             }
+            else if(num == 0)
+            {                                   //두개 생성
+                for (var i = 0; i < 2; i++) {
+                    var rand = parseInt(Math.random() * 16);
+                    var y = parseInt(rand / 4);
+                    var x = rand % 4;
+                    if (board[y][x] == 0) board[y][x] = (i+1)*2;
+                    else i--;
+                }
+            }
+            
             update();
         }
 
@@ -146,8 +231,12 @@
                     }
                 }
             }
-            if (isMoved) generate();
-            else checkGameOver();
+            if (isMoved){
+                score = score+1;
+                document.getElementById("score").innerHTML = "점수 : "+score.toString();
+                generate();
+                checkGameOver();
+            }
         }
 
         // 신규 숫자 생성
@@ -163,7 +252,7 @@
                         if (board[i][j] == 0) {
                             var rand = parseInt(Math.random() * zeroNum);
                             if (rand == 0) {
-                                board[i][j] = getNewNum();
+                                board[i][j] = 2;
                                 return;
                             }
                         }
@@ -179,15 +268,6 @@
             return 2;
         }
 
-        // 최대 점수 반환
-        function getMaxNum() {
-            var ret = 0;
-            for (var i = 0; i < 4; i++)
-                for (var j = 0; j < 4; j++)
-                    if (board[i][j] > ret)
-                        ret = board[i][j];
-            return ret;
-        }
 
         // 게임오버 체크
         function checkGameOver() {
@@ -212,8 +292,8 @@
 
         // 게임오버 처리
         function gameover() {
-            alert("[Game Over]");
-            init();
+            document.getElementById("gameover").style.display = "inline-block";
+            gameState = 0;
         }
     </script>
 </body>

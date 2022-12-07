@@ -1,0 +1,50 @@
+<!-- https://v3-docs.vuejs-korea.org/  -->
+<html lang="en">
+<head>
+    <title>2048</title>
+</head>
+<style>
+    #app{
+        width: 408px;
+        height: 500px;
+    }
+    .backblock{
+        border: 1px black solid;
+        width: 100px;
+        height: 100px;
+        float: left;
+    }
+    .blockPrefab{
+        width: 90px;
+        height: 90px;
+        position:relative;
+        border: 1px black solid;
+        background-color:blue;
+    }
+</style>
+<body>
+    <script src="https://unpkg.com/vue@3"></script>
+    
+    <div id="app">
+        <div class="backblock" v-for="index in backblocks">{{index}}</div>        
+        
+    </div>
+    
+    <script type="text/javascript" src="js/main.js"></script>
+        
+    <script type="text/javascript">
+        const {createApp} = Vue;
+        createApp({
+            data() {
+                return {                    
+                    backblocks : 16,
+                }
+            },
+            mounted(){
+                console.log("app 마운트 성공!");
+            },
+        }).mount("#app");
+
+    </script>
+</body>
+</html>

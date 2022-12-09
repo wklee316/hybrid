@@ -4,6 +4,7 @@ class BlockMap{
         this.div_app = document.getElementById("app");
         this.blockOnBoard = new Array();
         this.score = 0;
+        this.gameState = 0; //0: 게임 준비,  1: 플레이 중,  2: 플레이 중 애니메이션 
     }
     addblock(x,y,block){
         block.setactive(true);
@@ -24,12 +25,17 @@ class BlockMap{
             case 3: this.rotate(1); this.move(); this.rotate(3); break; //left
         }
 
+        //this.animate();
+    }
+
+    animate(){
         for(let i = 0; i < 4; i++){
             for(let j = 0; j < 4; j++){
                 if(this.Map[i][j] == null) continue;
                 this.Map[i][j].setcoord(j,i);
             }
         }
+
     }
 
     rotate(n){
@@ -140,12 +146,13 @@ class BlockMap{
     }
 
     gameover(){
-        console.log("over");
+        this.gameState = 0;
         document.getElementById("btn").style.display = "block";
         document.getElementById("gameover").style.display = "block";
     }
 
     init(){
+        this.gameState = 1;
         this.score = 0;
         document.getElementById("score").innerHTML = "Score: "+this.score.toString();
         document.getElementById("btn").style.display = "none";
@@ -199,6 +206,9 @@ class Block{
         this.Active = false;
         this.XPos = 0;
         this.YPos = 0;
+        this.dx = 0;
+        this.dy = 0;
+        this.aniState = 0;
         this.Element = document.createElement("div");
         this.Element.setAttribute("class","blockPrefab");
         this.Element.innerText = this.Value;
@@ -230,6 +240,32 @@ class Block{
         this.YPos =y;
         this.Element.style.top = this.YPos*202+17;
     }
+    setcoordWthAni(x,y){
+        this.XPos =x;
+        this.YPos =y;
+        let desX = this.XPos*202+18;
+        let desY = this.YPos*202+17;
+        let acX = 0;
+        let acY = 0;
+
+        if(desX == parseInt(this.Element.style.left,10)) acX = 0;
+        else if(desX > parseInt(this.Element.style.left,10)) acX = 1;
+        else acX= -1;
+
+        if(desY == parseInt(this.Element.style.top,10)) acY = 0;
+        else if(desY > parseInt(this.Element.style.top,10)) acY = -1;
+        else acY = 1;
+
+        this.Element.style.left = parseInt(this.Element.style.top,10) + acX;
+        this.Element.style.top = this.YPos*202+17;
+
+        console.log(this.Element.style.left);
+        console.log(this.Element.style.top);
+
+        //this.Element.style.left = this.XPos*202+18;
+        //this.Element.style.top = this.YPos*202+17;
+    }
+
     removeblock(pool){
         this.Element.style.display = "none"
         this.Active = false;
@@ -243,8 +279,41 @@ class Block{
 window.onkeydown = keylog;
 var blockmap = new BlockMap(4,4);
 var blockPool = new Array();
+var commandQueue = new Array();
 for(var i = 0; i < 16; i++){
     blockPool.push(new Block(2));
+}
+
+setInterval(update,1000/60);
+
+function update(){
+    if(commandQueue.length > 0 && blockmap.gameState == 1){
+        switch(commandQueue.pop()){
+            case 'Enter':
+                KeyEnter();
+                break;
+            case 'ArrowRight':
+                keyArrowRight();
+                break;
+            case 'ArrowLeft':
+                keyArrowLeft();
+                break;
+            case 'ArrowUp':
+                keyArrowUp();
+                break;
+            case 'ArrowDown':
+                keyArrowDown();
+                break;
+        }
+    }
+
+    blockmap.animate();
+    for(var i = 0; i < 4; i++){
+        for(var j = 0; j <4; j++){
+            if(blockmap.Map[i][j] == null) continue;
+            if(blockmap.Map[i][j].aniState != 0) blockmap.gameState = 2;
+        }
+    }
 }
 
 function keyArrowRight(){
@@ -278,24 +347,5 @@ function start(){
 }
 
 function keylog(e){
-    //console.log(e.key);
-    switch(e.key){
-        case 'Enter':
-            KeyEnter();
-            break;
-        case 'ArrowRight':
-            keyArrowRight();
-            break;
-        case 'ArrowLeft':
-            keyArrowLeft();
-            break;
-        case 'ArrowUp':
-            keyArrowUp();
-            break;
-        case 'ArrowDown':
-            keyArrowDown();
-            break;
-        default:            
-            break;
-    }
+    commandQueue.push(e.key);            
 }

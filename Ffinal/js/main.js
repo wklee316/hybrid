@@ -106,7 +106,7 @@ class BlockMap{
                     if (this.Map[i][j] == null) {
                         var rand = parseInt(Math.random() * zeroNum);
                         if (rand == 0) {
-                            this.addblock(j, i, blockPool.pop());
+                            this.addblock(j, i, blockPool.pop());       //blockPool의 box를 pop하여 메모리 최적화
                             return;
                         }
                     }
@@ -279,13 +279,12 @@ class Block{
 window.onkeydown = keylog;
 var blockmap = new BlockMap(4,4);
 var blockPool = new Array();
-var commandQueue = new Array();
 for(var i = 0; i < 16; i++){
     blockPool.push(new Block(2));
 }
 
+var commandQueue = new Array();
 setInterval(update,1000/60);
-
 function update(){
     if(commandQueue.length > 0 && blockmap.gameState == 1){
         switch(commandQueue.pop()){
@@ -337,9 +336,10 @@ function keyArrowDown(){
 }
 
 function KeyEnter(){
-    if(blockPool.length > 0){
-        blockmap.addblock(0,2, blockPool.pop());
-    }
+    blockmap.compute(0);
+    blockmap.compute(1); 
+    blockmap.compute(2);
+    blockmap.compute(3);
 }
 
 function start(){
